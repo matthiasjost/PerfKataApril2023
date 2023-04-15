@@ -4,18 +4,23 @@ public static class StringExtensions
 {
     public static int LargestProduct(this string grid)
     {
+        return LargestProductAsync(grid).Result;
+    }
+
+    public async static Task<int> LargestProductAsync(this string grid)
+    {
         ParseGrid(grid, out int[,] gridTable);
 
         int largest = 0;
 
-        int largestProductHorizontal = FindLargestHorizontal(gridTable);
-        int largestProductVertical = FindLargestVertical(gridTable);
-        int largestProductDiagonalLeftRight = FindLargestDiagonalLeftRight(gridTable);
-        int largestProductDiagonalRightLeft = FindLargestDiagonalRightLeft(gridTable);
+        Task<int> task1 = Task.Run(() => FindLargestHorizontal(gridTable));
+        Task<int> task2 = Task.Run(() => FindLargestVertical(gridTable));
+        Task<int> task3 = Task.Run(() => FindLargestDiagonalLeftRight(gridTable));
+        Task<int> task4 = Task.Run(() => FindLargestDiagonalRightLeft(gridTable));
 
-        largest = Math.Max(largestProductHorizontal,
-                    Math.Max(largestProductVertical, 
-                     Math.Max(largestProductDiagonalRightLeft, largestProductDiagonalLeftRight)));
+        int[] results = await Task.WhenAll(task1, task2, task3, task4);
+        largest = results.Max();
+
         return largest;
     }
 
