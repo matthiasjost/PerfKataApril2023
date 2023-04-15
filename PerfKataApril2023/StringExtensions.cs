@@ -10,13 +10,16 @@ public static class StringExtensions
 
         int largestProductHorizontal = FindLargestHorizontal(gridTable);
         int largestProductVertical = FindLargestVertical(gridTable);
-        int largestProductDiagonal = FindLargestDiagonal(gridTable);
-        
-        largest = Math.Max(largestProductHorizontal, Math.Max(largestProductVertical, largestProductDiagonal));
+        int largestProductDiagonalLeftRight = FindLargestDiagonalLeftRight(gridTable);
+        int largestProductDiagonalRightLeft = FindLargestDiagonalRightLeft(gridTable);
+
+        largest = Math.Max(largestProductHorizontal,
+                    Math.Max(largestProductVertical, 
+                     Math.Max(largestProductDiagonalRightLeft, largestProductDiagonalLeftRight)));
         return largest;
     }
 
-    private static int FindLargestDiagonal(int[,] gridTable)
+    private static int FindLargestDiagonalLeftRight(int[,] gridTable)
     {
         int largestProduct = 0;
 
@@ -25,6 +28,25 @@ public static class StringExtensions
             for (int c = 0; c < gridTable.GetLength(1) - 3; c++)
             {
                 int product = gridTable[r, c] * gridTable[r + 1, c + 1] * gridTable[r + 2, c + 2] * gridTable[r + 3, c + 3];
+
+                if (product > largestProduct)
+                {
+                    largestProduct = product;
+                }
+            }
+        }
+        return largestProduct;
+    }
+
+    private static int FindLargestDiagonalRightLeft(int[,] gridTable)
+    {
+        int largestProduct = 0;
+
+        for (int r = 1; r < gridTable.GetLength(0) - 3; r++)
+        {
+            for (int c = 0; c < gridTable.GetLength(1) - 3; c++)
+            {
+                int product = gridTable[r, c + 3] * gridTable[r + 1, c + 2] * gridTable[r + 2, c + 1] * gridTable[r + 3, c];
 
                 if (product > largestProduct)
                 {
